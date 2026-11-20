@@ -1,0 +1,278 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private player profile with nickname, avatar selection, and match statistics.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase UID of the player."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player nickname shown in rooms and tables (1-30 chars)."
+        },
+        "avatarIndex": {
+          "type": "integer",
+          "description": "Selected avatar style index (0-7)."
+        },
+        "wins": {
+          "type": "integer",
+          "description": "Total Ludo matches won."
+        },
+        "gamesPlayed": {
+          "type": "integer",
+          "description": "Total Ludo matches played."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when profile was created (FieldValue.serverTimestamp)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when profile was last updated (FieldValue.serverTimestamp)."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "avatarIndex",
+        "wins",
+        "gamesPlayed",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "GameRoom": {
+      "title": "GameRoom",
+      "description": "4-player online Ludo room holding lobby seats, live board pieces, turn state, and voice mute indicators.",
+      "type": "object",
+      "properties": {
+        "roomCode": {
+          "type": "string",
+          "description": "Unique room identifier matching the document ID."
+        },
+        "hostUid": {
+          "type": "string",
+          "description": "UID of the player who created the room."
+        },
+        "title": {
+          "type": "string",
+          "description": "Room display title."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "private"],
+          "description": "Whether room appears in the public lobby or is joinable by code."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["waiting", "playing", "finished"],
+          "description": "Lifecycle state of the match."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "UIDs of human players currently in the room (1-4)."
+        },
+        "seatUids": {
+          "type": "array",
+          "description": "4-element array of UIDs per seat (Red, Green, Yellow, Blue)."
+        },
+        "seatNames": {
+          "type": "array",
+          "description": "4-element array of player names per seat."
+        },
+        "seatTypes": {
+          "type": "array",
+          "description": "4-element array of seat occupancy ('empty', 'human', 'bot')."
+        },
+        "seatMuted": {
+          "type": "array",
+          "description": "4-element array of voice mute flags per seat."
+        },
+        "seatSpeaking": {
+          "type": "array",
+          "description": "4-element array of live speaking indicators per seat."
+        },
+        "pieces": {
+          "type": "array",
+          "description": "16-element array of pawn progress (-1 yard, 0..50 track, 51..55 home lane, 56 finished)."
+        },
+        "currentTurn": {
+          "type": "integer",
+          "description": "Active seat index (0-3)."
+        },
+        "diceValue": {
+          "type": "integer",
+          "description": "Latest dice roll (0 if awaiting roll, 1-6 when rolled)."
+        },
+        "turnPhase": {
+          "type": "string",
+          "enum": ["roll", "move"],
+          "description": "Current phase inside the active turn."
+        },
+        "consecutiveSixes": {
+          "type": "integer",
+          "description": "Number of consecutive sixes rolled in the current turn."
+        },
+        "winnerSeat": {
+          "type": "integer",
+          "description": "Winning seat index (0-3) or -1 while active."
+        },
+        "lastActionText": {
+          "type": "string",
+          "description": "Latest human-readable action summary in Persian."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of room creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest update."
+        }
+      },
+      "required": [
+        "roomCode",
+        "hostUid",
+        "title",
+        "visibility",
+        "status",
+        "memberUids",
+        "seatUids",
+        "seatNames",
+        "seatTypes",
+        "seatMuted",
+        "seatSpeaking",
+        "pieces",
+        "currentTurn",
+        "diceValue",
+        "turnPhase",
+        "consecutiveSixes",
+        "winnerSeat",
+        "lastActionText",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "VoiceSignal": {
+      "title": "VoiceSignal",
+      "description": "WebRTC peer-to-peer signaling packet (offer, answer, ice) between two room members.",
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string",
+          "description": "Parent room ID."
+        },
+        "senderUid": {
+          "type": "string",
+          "description": "UID of the sender."
+        },
+        "targetUid": {
+          "type": "string",
+          "description": "UID of the intended recipient."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Denormalized room member UIDs."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["offer", "answer", "ice"],
+          "description": "WebRTC signal type."
+        },
+        "sdp": {
+          "type": "string",
+          "description": "SDP session description or ICE candidate string."
+        },
+        "sdpMid": {
+          "type": "string",
+          "description": "ICE sdpMid value."
+        },
+        "sdpMLineIndex": {
+          "type": "integer",
+          "description": "ICE sdpMLineIndex value."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of signal creation."
+        }
+      },
+      "required": [
+        "roomId",
+        "senderUid",
+        "targetUid",
+        "memberUids",
+        "type",
+        "sdp",
+        "sdpMid",
+        "sdpMLineIndex",
+        "createdAt"
+      ]
+    },
+    "RoomMessage": {
+      "title": "RoomMessage",
+      "description": "Quick reaction or short message inside a room.",
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string",
+          "description": "Parent room ID."
+        },
+        "senderUid": {
+          "type": "string",
+          "description": "UID of the sender."
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Display name of the sender."
+        },
+        "memberUids": {
+          "type": "array",
+          "description": "Denormalized room member UIDs."
+        },
+        "text": {
+          "type": "string",
+          "description": "Reaction or short message text."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of message creation."
+        }
+      },
+      "required": [
+        "roomId",
+        "senderUid",
+        "senderName",
+        "memberUids",
+        "text",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private player profile documents."
+    },
+    "/rooms/{roomId}": {
+      "schema": { "$ref": "#/entities/GameRoom" },
+      "description": "4-player online Ludo rooms and live game state."
+    },
+    "/rooms/{roomId}/signals/{signalId}": {
+      "schema": { "$ref": "#/entities/VoiceSignal" },
+      "description": "WebRTC SDP/ICE signaling messages for live voice chat."
+    },
+    "/rooms/{roomId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/RoomMessage" },
+      "description": "Quick table reactions and messages inside a room."
+    }
+  }
+}

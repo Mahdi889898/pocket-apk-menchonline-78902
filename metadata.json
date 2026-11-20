@@ -1,0 +1,6 @@
+{
+  "name": "منچ آنلاین",
+  "description": "بازی منچ آنلاین چهارنفره با گرافیک جذاب، انیمیشن تاس و چت صوتی زنده در حین بازی",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
